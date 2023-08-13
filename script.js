@@ -8,6 +8,9 @@ const gameBoardModule = (() => {
         updateCell: (index, symbol) => {
             gameboard[index] = symbol;
         },
+        resetBoard: () => {
+            gameboard = ["", "", "", "", "", "", "", "", ""];
+        },
 
     }
 })();
@@ -54,11 +57,16 @@ const gameFlowModule = (() => {
         return !gameboard.includes("");
     };
 
+    const setCurrentPlayer = (player) => {
+        currentPlayer = player;
+    };
+
     return {
         getCurrentPlayer: () => currentPlayer,
         switchPlayer,
         checkWin,
         checkDraw,
+        setCurrentPlayer,
     };
 
 })();
@@ -71,9 +79,7 @@ function renderGameBoard() {
 
     // clear any existing content
     gameContainer.innerHTML = '';
-    const resultElement = document.getElementById('result');
-    resultElement.textContent = '';
-
+    
     // create game cells
     gameboard.forEach((cellValue, index) => {
         const cell = document.createElement('div');
@@ -82,12 +88,13 @@ function renderGameBoard() {
         cell.addEventListener('click', () => handleCellClick(index)); 
         gameContainer.appendChild(cell);
     });
-
+}
     const inputContainer = document.getElementById('input-container');
     const startButton = document.getElementById('start-game');
 
     inputContainer.style.display = 'block';
     startButton.addEventListener('click', startGame);
+
 
     function startGame() {
         // Get player names from input fields
@@ -95,12 +102,14 @@ function renderGameBoard() {
         const player2Name = document.getElementById('playertwo-name').value || 'Player Two';
     
         // Create player objects with the entered names
-        const playerOne = playerFactory(player1Name, 'X');
-        const playerTwo = playerFactory(player2Name, 'O');
+        playerOne.name = player1Name;
+        playerTwo.name = player2Name;
         
         gameFlowModule.setCurrentPlayer(playerOne);
         // Hide the input fields and start button
         inputContainer.style.display = 'none';
+
+        renderGameBoard();
 
 }
 
@@ -118,16 +127,50 @@ function handleCellClick(index) {
         gameFlowModule.switchPlayer();
 
         const messageElement = document.getElementById('message');
-        const resultElement = document.getElementById('result');
 
         if (gameFlowModule.checkWin()) {
             messageElement.textContent = `${currentPlayer.name} wins! Congratulations!`;
-            resultElement.textContent = `${currentPlayer.name} wins!`;
         } else if (gameFlowModule.checkDraw()) {
-            messageElement.textContent = "It's a tie!";
-            resultElement.textContent = "It's a draw!";
+            messageElement.textContent = "It's a draw!";
         }
+    }
+
+    if (gameFlowModule.checkWin() || gameFlowModule.checkDraw()) {
+        showPlayAgainButton();
     }
 }
 
-renderGameBoard();
+const playAgainButton = document.getElementById('play-again');
+playAgainButton.addEventListener('click', resetGame);
+
+function showPlayAgainButton() {
+    playAgainButton.style.display = 'block';
+}
+
+function hidePlayAgainButton() {
+    playAgainButton.style.display = 'none';
+}
+
+const messageElement = document.getElementById('message'); // Declare it here
+
+function resetGame() {
+    gameBoardModule.resetBoard(); // Clear the game board
+    renderGameBoard(); // Render the cleared game board
+    messageElement.textContent = ''; // Clear the message
+    inputContainer.style.display = 'block'; // Show the player name input fields
+    hidePlayAgainButton(); // Hide the "Play Again" button again
+    document.getElementById('game-container').style.display = 'none'; // Hide the game board
+    document.getElementById('start-game').addEventListener('click', showGameBoard); // Show the game board when "Start Game" is pressed again
+
+    // Clear the player name input fields
+    document.getElementById('playerone-name').value = '';
+    document.getElementById('playertwo-name').value = '';
+
+    // Reset current player to playerOne
+    gameFlowModule.setCurrentPlayer(playerOne);
+}
+
+function showGameBoard() {
+    document.getElementById('game-container').style.display = 'grid'; // Show the game board
+    document.getElementById('start-game').removeEventListener('click', showGameBoard); // Remove the event listener
+}
