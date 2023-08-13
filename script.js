@@ -77,8 +77,31 @@ function renderGameBoard() {
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.textContent = cellValue;
+        cell.addEventListener('click', () => handleCellClick(index)); 
         gameContainer.appendChild(cell);
     });
 }
 
+// handling player moves
+
+function handleCellClick(index) {
+    const gameboard = gameBoardModule.getGameBoard();
+    const currentPlayer = gameFlowModule.getCurrentPlayer();
+
+    if (!gameboard[index]) {
+        gameBoardModule.updateCell(index, currentPlayer.symbol);
+
+        renderGameBoard();
+
+        gameFlowModule.switchPlayer();
+
+        if (gameFlowModule.checkWin()) {
+
+        } else if (gameFlowModule.checkDraw()) {
+
+        }
+    }
+}
+
 renderGameBoard();
+
