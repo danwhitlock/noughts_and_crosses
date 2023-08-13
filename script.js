@@ -71,6 +71,8 @@ function renderGameBoard() {
 
     // clear any existing content
     gameContainer.innerHTML = '';
+    const resultElement = document.getElementById('result');
+    resultElement.textContent = '';
 
     // create game cells
     gameboard.forEach((cellValue, index) => {
@@ -100,6 +102,14 @@ function handleCellClick(index) {
         } else if (gameFlowModule.checkDraw()) {
 
         }
+    }
+
+    const resultElement = document.getElementById('result');
+    if (gameFlowModule.checkWin()) {
+        const currentPlayer = gameFlowModule.getCurrentPlayer();
+        resultElement.textContent = `${currentPlayer.name} wins!`;
+    } else if (gameFlowModule.checkDraw()) {
+        resultElement.textContent = "It's a draw!";
     }
 }
 
