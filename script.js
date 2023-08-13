@@ -82,6 +82,26 @@ function renderGameBoard() {
         cell.addEventListener('click', () => handleCellClick(index)); 
         gameContainer.appendChild(cell);
     });
+
+    const inputContainer = document.getElementById('input-container');
+    const startButton = document.getElementById('start-game');
+
+    inputContainer.style.display = 'block';
+    startButton.addEventListener('click', startGame);
+
+    function startGame() {
+        // Get player names from input fields
+        const player1Name = document.getElementById('playerone-name').value || 'Player One';
+        const player2Name = document.getElementById('playertwo-name').value || 'Player Two';
+    
+        // Create player objects with the entered names
+        const playerOne = playerFactory(player1Name, 'X');
+        const playerTwo = playerFactory(player2Name, 'O');
+        
+        gameFlowModule.setCurrentPlayer(playerOne);
+        // Hide the input fields and start button
+        inputContainer.style.display = 'none';
+
 }
 
 // handling player moves
@@ -97,21 +117,17 @@ function handleCellClick(index) {
 
         gameFlowModule.switchPlayer();
 
+        const messageElement = document.getElementById('message');
+        const resultElement = document.getElementById('result');
+
         if (gameFlowModule.checkWin()) {
-
+            messageElement.textContent = `${currentPlayer.name} wins! Congratulations!`;
+            resultElement.textContent = `${currentPlayer.name} wins!`;
         } else if (gameFlowModule.checkDraw()) {
-
+            messageElement.textContent = "It's a tie!";
+            resultElement.textContent = "It's a draw!";
         }
-    }
-
-    const resultElement = document.getElementById('result');
-    if (gameFlowModule.checkWin()) {
-        const currentPlayer = gameFlowModule.getCurrentPlayer();
-        resultElement.textContent = `${currentPlayer.name} wins!`;
-    } else if (gameFlowModule.checkDraw()) {
-        resultElement.textContent = "It's a draw!";
     }
 }
 
 renderGameBoard();
-
