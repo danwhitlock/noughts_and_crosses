@@ -1,3 +1,12 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+}
+
 #game-container {
     display: grid;
     grid-template-columns: repeat(3, 100px);
@@ -11,8 +20,16 @@
 .cell {
     height: 100px;
     width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
 }
 
 #play-again {
     display: none;
+}
+
+#message {
+    padding: 20px;
 }
