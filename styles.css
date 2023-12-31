@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+
+
 body {
     display: flex;
     align-items: center;
@@ -5,6 +8,8 @@ body {
     height: 100vh;
     margin: 0;
     flex-direction: column;
+    background-color: honeydew;
+    font-family: 'Kanit', sans-serif;
 }
 
 #game-container {
